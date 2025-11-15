@@ -2,11 +2,117 @@
 
 /**
  * Super Guttering Services Theme Functions
+ * 
+ * @package SGS
+ * @version 1.0.0
+ * @author Brad Fletcher
+ * 
+ * ============================================================================
+ * IMPORTANT: When adding, removing, or modifying functions, UPDATE THE INDEX!
+ * ============================================================================
+ * 
+ * TABLE OF CONTENTS
+ * ============================================================================
+ * 
+ * 1. THEME SETUP & CONFIGURATION
+ *    - sgs_theme_setup()                    Line ~24  | Theme support features
+ *    - sgs_content_width()                  Line ~52  | Set content width
+ * 
+ * 2. IMAGE OPTIMIZATION
+ *    - sgs_enable_webp_support()            Line ~67  | Enable WebP format
+ *    - sgs_optimize_image_quality()         Line ~75  | Set JPEG quality to 85%
+ *    - sgs_add_image_dimensions()           Line ~87  | Add width/height for CLS
+ *    - sgs_set_max_image_size()             Line ~119 | 5MB upload limit
+ *    - sgs_enable_responsive_images()       Line ~138 | Enable srcset
+ *    - sgs_disable_unused_image_sizes()     Line ~151 | Remove unused sizes
+ *    - sgs_image_optimization_notice()      Line ~165 | Admin notice
+ * 
+ * 3. ASSETS & ENQUEUE
+ *    - sgs_enqueue_assets()                 Line ~177 | Scripts & styles
+ * 
+ * 4. WIDGET AREAS
+ *    - sgs_widgets_init()                   Line ~211 | Register sidebars
+ * 
+ * 5. CUSTOM POST TYPES
+ *    - sgs_register_custom_post_types()     Line ~239 | Reviews, News, Services
+ * 
+ * 6. CUSTOM TAXONOMIES
+ *    - sgs_register_custom_taxonomies()     Line ~314 | Service categories
+ * 
+ * 7. CUSTOMIZER SETTINGS
+ *    - sgs_customize_register()             Line ~339 | Theme customizer options
+ * 
+ * 8. NAVIGATION & MENUS
+ *    - sgs_register_menus()                 Line ~363 | Menu locations
+ * 
+ * 9. REVIEWS FUNCTIONALITY
+ *    - sgs_add_review_meta_boxes()          Line ~375 | Review rating meta box
+ *    - sgs_save_review_meta()               Line ~403 | Save review data
+ *    - sgs_display_stars()                  Line ~426 | Star rating display
+ * 
+ * 10. SEO META TAGS
+ *     - sgs_add_meta_description()          Line ~447 | Meta descriptions
+ *     - sgs_add_twitter_cards()             Line ~478 | Twitter Card tags
+ *     - sgs_add_image_alt_text()            Line ~510 | Auto alt text
+ * 
+ * 11. PERFORMANCE OPTIMIZATIONS
+ *     - Remove WordPress bloat              Line ~523 | Generator, RSD, etc.
+ *     - sgs_disable_emojis()                Line ~529 | Remove emoji scripts
+ *     - sgs_disable_embeds()                Line ~1212| Remove oEmbed
+ *     - sgs_remove_query_strings()          Line ~1220| Better caching
+ *     - sgs_add_async_defer_attribute()     Line ~1231| Defer JS loading
+ *     - sgs_add_lazy_loading()              Line ~1245| Lazy load images
+ *     - sgs_dns_prefetch()                  Line ~1257| DNS prefetch
+ * 
+ * 12. SEO ENHANCEMENTS
+ *     - sgs_add_open_graph_tags()           Line ~1269| Open Graph meta
+ *     - sgs_add_canonical()                 Line ~1313| Canonical URLs
+ *     - sgs_custom_excerpt_length()         Line ~1324| Excerpt for SEO
+ *     - sgs_add_schema_markup()             Line ~1331| Schema.org data
+ * 
+ * 13. UTILITY FUNCTIONS
+ *     - sgs_breadcrumbs()                   Line ~541 | Breadcrumb navigation
+ *     - sgs_estimated_reading_time()        Line ~693 | Reading time calc
+ * 
+ * 14. NEWS POST TYPE
+ *     - sgs_add_news_meta_boxes()           Line ~713 | News meta boxes
+ *     - sgs_render_news_featured_meta()     Line ~732 | Featured checkbox
+ *     - sgs_render_news_seo_meta()          Line ~746 | SEO fields
+ *     - sgs_save_news_meta()                Line ~781 | Save news meta
+ *     - sgs_save_news_seo_meta()            Line ~801 | Save SEO meta
+ *     - sgs_add_news_meta_tags()            Line ~815 | News meta tags
+ * 
+ * 15. SOCIAL MEDIA
+ *     - sgs_social_icons()                  Line ~1141| Social icon links
+ *     - sgs_footer_social_icons()           Line ~1177| Footer social icons
+ * 
+ * 16. VERSION CONTROL
+ *     - sgs_get_theme_version()             Line ~1189| Get version from file
+ * 
+ * ============================================================================
+ * MAINTENANCE INSTRUCTIONS
+ * ============================================================================
+ * 
+ * When modifying this file:
+ * 1. Add new functions in the appropriate section
+ * 2. Update the line numbers in the index above
+ * 3. Add a brief description of the function's purpose
+ * 4. Use clear, descriptive function names prefixed with 'sgs_'
+ * 5. Add docblocks to all functions
+ * 6. Follow WordPress coding standards
+ * 
+ * ============================================================================
  */
 
 if (!defined('ABSPATH')) {
   exit; // Exit if accessed directly
 }
+
+/**
+ * ============================================================================
+ * 1. THEME SETUP & CONFIGURATION
+ * ============================================================================
+ */
 
 /**
  * Theme Setup
@@ -62,23 +168,18 @@ function sgs_theme_setup()
 add_action('after_setup_theme', 'sgs_theme_setup');
 
 /**
+ * ============================================================================
+ * 2. IMAGE OPTIMIZATION
+ * ============================================================================
+ */
+
+/**
  * Enable WebP Support
  */
 function sgs_enable_webp_support($editors)
 {
   return array('WP_Image_Editor_GD', 'WP_Image_Editor_Imagick');
 }
-
-/**
- * Add Lazy Loading to Images
- */
-function sgs_add_lazy_loading($content)
-{
-  // Add loading="lazy" to all images in content
-  $content = preg_replace('/<img(.*?)>/i', '<img$1 loading="lazy">', $content);
-  return $content;
-}
-add_filter('the_content', 'sgs_add_lazy_loading');
 
 /**
  * Optimize Image Quality
@@ -185,6 +286,12 @@ function sgs_image_optimization_notice()
 add_action('admin_notices', 'sgs_image_optimization_notice');
 
 /**
+ * ============================================================================
+ * 3. ASSETS & ENQUEUE
+ * ============================================================================
+ */
+
+/**
  * Enqueue scripts and styles
  */
 function sgs_enqueue_assets()
@@ -192,8 +299,10 @@ function sgs_enqueue_assets()
   // Enqueue Tailwind CSS with cache busting
   wp_enqueue_style('sgs-tailwind', get_template_directory_uri() . '/assets/css/style.css', array(), filemtime(get_template_directory() . '/assets/css/style.css'));
 
-  // Enqueue Article CSS for single posts
-  wp_enqueue_style('sgs-article', get_template_directory_uri() . '/assets/css/article.css', array('sgs-tailwind'), '1.0.0');
+  // Enqueue Article CSS for single posts only
+  if (is_singular()) {
+    wp_enqueue_style('sgs-article', get_template_directory_uri() . '/assets/css/article.css', array('sgs-tailwind'), '1.0.0');
+  }
 
   // Preconnect to Google Fonts for faster loading
   add_action('wp_head', function () {
@@ -204,11 +313,13 @@ function sgs_enqueue_assets()
   // Enqueue Google Fonts with display=swap for better performance
   wp_enqueue_style('sgs-fonts', 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@600;700;800&display=swap', array(), null);
 
-  // Enqueue mobile menu script
+  // Enqueue mobile menu script with defer
   wp_enqueue_script('sgs-mobile-menu', get_template_directory_uri() . '/assets/js/mobile-menu.js', array(), '1.0.0', true);
+  wp_script_add_data('sgs-mobile-menu', 'defer', true);
 
-  // Enqueue scroll animations script
+  // Enqueue scroll animations script with defer
   wp_enqueue_script('sgs-scroll-animations', get_template_directory_uri() . '/assets/js/scroll-animations.js', array(), '1.0.0', true);
+  wp_script_add_data('sgs-scroll-animations', 'defer', true);
 
   // Enqueue comment reply script
   if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -216,6 +327,12 @@ function sgs_enqueue_assets()
   }
 }
 add_action('wp_enqueue_scripts', 'sgs_enqueue_assets');
+
+/**
+ * ============================================================================
+ * 4. WIDGET AREAS
+ * ============================================================================
+ */
 
 /**
  * Register widget areas
@@ -265,6 +382,70 @@ function sgs_widgets_init()
 add_action('widgets_init', 'sgs_widgets_init');
 
 /**
+ * ============================================================================
+ * 5. CUSTOM POST TYPES
+ * ============================================================================
+ */
+
+/**
+ * Register News Custom Post Type
+ */
+function sgs_register_news_post_type()
+{
+  $labels = array(
+    'name'               => 'News',
+    'singular_name'      => 'News Article',
+    'menu_name'          => 'News',
+    'add_new'            => 'Add New',
+    'add_new_item'       => 'Add New Article',
+    'edit_item'          => 'Edit Article',
+    'new_item'           => 'New Article',
+    'view_item'          => 'View Article',
+    'search_items'       => 'Search News',
+    'not_found'          => 'No articles found',
+    'not_found_in_trash' => 'No articles found in trash'
+  );
+
+  $args = array(
+    'labels'              => $labels,
+    'public'              => true,
+    'has_archive'         => true,
+    'publicly_queryable'  => true,
+    'show_ui'             => true,
+    'show_in_menu'        => true,
+    'show_in_rest'        => true, // Enable Gutenberg editor
+    'menu_icon'           => 'dashicons-megaphone',
+    'menu_position'       => 5,
+    'supports'            => array('title', 'editor', 'excerpt', 'thumbnail', 'author', 'comments', 'revisions'),
+    'rewrite'             => array(
+      'slug'       => 'news',
+      'with_front' => false,
+    ),
+    'capability_type'     => 'post',
+    'taxonomies'          => array('category', 'post_tag'),
+  );
+
+  register_post_type('news', $args);
+}
+add_action('init', 'sgs_register_news_post_type');
+
+/**
+ * Flush rewrite rules on theme activation
+ */
+function sgs_flush_rewrites()
+{
+  sgs_register_news_post_type();
+  flush_rewrite_rules();
+}
+add_action('after_switch_theme', 'sgs_flush_rewrites');
+
+/**
+ * ============================================================================
+ * 6. EXCERPT CUSTOMIZATION
+ * ============================================================================
+ */
+
+/**
  * Custom excerpt length
  */
 function sgs_excerpt_length($length)
@@ -281,6 +462,12 @@ function sgs_excerpt_more($more)
   return '...';
 }
 add_filter('excerpt_more', 'sgs_excerpt_more');
+
+/**
+ * ============================================================================
+ * 7. CUSTOMIZER SETTINGS
+ * ============================================================================
+ */
 
 /**
  * Theme Customizer - Social Media Links
@@ -357,6 +544,12 @@ function sgs_customize_register($wp_customize)
 add_action('customize_register', 'sgs_customize_register');
 
 /**
+ * ============================================================================
+ * 8. NAVIGATION & MENUS
+ * ============================================================================
+ */
+
+/**
  * Display Social Media Icons
  */
 function sgs_social_icons($classes = '')
@@ -417,12 +610,164 @@ function sgs_social_icons($classes = '')
 }
 
 /**
- * SEO Enhancements
+ * ============================================================================
+ * 9. REVIEWS FUNCTIONALITY
+ * ============================================================================
  */
-// Add theme support for title tag
-add_theme_support('title-tag');
 
-// Add custom meta description
+/**
+ * Register Reviews Custom Post Type
+ */
+function sgs_register_reviews_post_type()
+{
+  $labels = array(
+    'name'               => 'Reviews',
+    'singular_name'      => 'Review',
+    'menu_name'          => 'Reviews',
+    'add_new'            => 'Add New',
+    'add_new_item'       => 'Add New Review',
+    'edit_item'          => 'Edit Review',
+    'new_item'           => 'New Review',
+    'view_item'          => 'View Review',
+    'search_items'       => 'Search Reviews',
+    'not_found'          => 'No reviews found',
+    'not_found_in_trash' => 'No reviews found in trash'
+  );
+
+  $args = array(
+    'labels'              => $labels,
+    'public'              => true,
+    'has_archive'         => false,
+    'publicly_queryable'  => false,
+    'show_ui'             => true,
+    'show_in_menu'        => true,
+    'menu_icon'           => 'dashicons-star-filled',
+    'supports'            => array('title', 'editor'),
+    'capability_type'     => 'post',
+    'rewrite'             => false,
+  );
+
+  register_post_type('review', $args);
+}
+add_action('init', 'sgs_register_reviews_post_type');
+
+/**
+ * Add Review Meta Boxes
+ */
+function sgs_add_review_meta_boxes()
+{
+  add_meta_box(
+    'review_details',
+    'Review Details',
+    'sgs_review_meta_box_callback',
+    'review',
+    'normal',
+    'high'
+  );
+}
+add_action('add_meta_boxes', 'sgs_add_review_meta_boxes');
+
+/**
+ * Review Meta Box Callback
+ */
+function sgs_review_meta_box_callback($post)
+{
+  wp_nonce_field('sgs_save_review_meta', 'sgs_review_meta_nonce');
+
+  $rating = get_post_meta($post->ID, '_review_rating', true);
+  $reviewer_name = get_post_meta($post->ID, '_reviewer_name', true);
+  $reviewer_location = get_post_meta($post->ID, '_reviewer_location', true);
+  ?>
+  <div style="margin: 15px 0;">
+    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Reviewer Name:</label>
+    <input type="text" name="reviewer_name" value="<?php echo esc_attr($reviewer_name); ?>" style="width: 100%; padding: 8px;" placeholder="John Smith">
+  </div>
+
+  <div style="margin: 15px 0;">
+    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Location:</label>
+    <input type="text" name="reviewer_location" value="<?php echo esc_attr($reviewer_location); ?>" style="width: 100%; padding: 8px;" placeholder="Salisbury, Wiltshire">
+  </div>
+
+  <div style="margin: 15px 0;">
+    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Rating (1-5 stars):</label>
+    <select name="review_rating" style="width: 100%; padding: 8px;">
+      <option value="">Select Rating</option>
+      <?php for ($i = 1; $i <= 5; $i++) : ?>
+        <option value="<?php echo $i; ?>" <?php selected($rating, $i); ?>>
+          <?php echo $i; ?> Star<?php echo $i > 1 ? 's' : ''; ?>
+        </option>
+      <?php endfor; ?>
+    </select>
+  </div>
+<?php
+}
+
+/**
+ * Save Review Meta Data
+ */
+function sgs_save_review_meta($post_id)
+{
+  if (!isset($_POST['sgs_review_meta_nonce']) || !wp_verify_nonce($_POST['sgs_review_meta_nonce'], 'sgs_save_review_meta')) {
+    return;
+  }
+
+  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+    return;
+  }
+
+  if (!current_user_can('edit_post', $post_id)) {
+    return;
+  }
+
+  if (isset($_POST['review_rating'])) {
+    update_post_meta($post_id, '_review_rating', sanitize_text_field($_POST['review_rating']));
+  }
+
+  if (isset($_POST['reviewer_name'])) {
+    update_post_meta($post_id, '_reviewer_name', sanitize_text_field($_POST['reviewer_name']));
+  }
+
+  if (isset($_POST['reviewer_location'])) {
+    update_post_meta($post_id, '_reviewer_location', sanitize_text_field($_POST['reviewer_location']));
+  }
+}
+add_action('save_post_review', 'sgs_save_review_meta');
+
+/**
+ * Display Star Rating
+ */
+function sgs_display_stars($rating, $size = 'default')
+{
+  $size_class = $size === 'large' ? 'w-6 h-6' : 'w-5 h-5';
+  $output = '<div class="flex gap-1">';
+
+  for ($i = 1; $i <= 5; $i++) {
+    if ($i <= $rating) {
+      // Full star
+      $output .= '<svg class="' . $size_class . ' text-secondary-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>';
+    } else {
+      // Empty star
+      $output .= '<svg class="' . $size_class . ' text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+            </svg>';
+    }
+  }
+
+  $output .= '</div>';
+  return $output;
+}
+
+/**
+ * ============================================================================
+ * 10. SEO META TAGS
+ * ============================================================================
+ */
+
+/**
+ * Add Meta Description to Head
+ */
 function sgs_add_meta_description()
 {
   if (is_singular()) {
@@ -444,7 +789,9 @@ function sgs_add_meta_description()
 }
 add_action('wp_head', 'sgs_add_meta_description', 1);
 
-// Add Open Graph meta tags
+/**
+ * Add Open Graph meta tags
+ */
 function sgs_add_og_tags()
 {
   $default_image = get_template_directory_uri() . '/assets/img/social.png';
@@ -481,7 +828,9 @@ function sgs_add_og_tags()
 }
 add_action('wp_head', 'sgs_add_og_tags', 2);
 
-// Add Twitter Card meta tags
+/**
+ * Add Twitter Card meta tags
+ */
 function sgs_add_twitter_cards()
 {
   $default_image = get_template_directory_uri() . '/assets/img/social.png';
@@ -513,36 +862,9 @@ function sgs_add_twitter_cards()
 }
 add_action('wp_head', 'sgs_add_twitter_cards', 3);
 
-// Add Schema.org structured data for local business
-function sgs_add_schema_markup()
-{
-  if (is_front_page()) {
-    $schema = array(
-      '@context' => 'https://schema.org',
-      '@type' => 'LocalBusiness',
-      'name' => get_bloginfo('name'),
-      'description' => get_bloginfo('description'),
-      'url' => home_url('/'),
-      'telephone' => '07936764009',
-      'email' => 'info@superguttering.co.uk',
-      'address' => array(
-        '@type' => 'PostalAddress',
-        'addressLocality' => 'Salisbury',
-        'addressRegion' => 'Wiltshire',
-        'addressCountry' => 'UK'
-      ),
-      'priceRange' => '££',
-      'openingHours' => 'Mo-Sa 08:00-18:00'
-    );
-
-    echo '<script type="application/ld+json">' . "\n";
-    echo wp_json_encode($schema, JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
-    echo "\n" . '</script>' . "\n";
-  }
-}
-add_action('wp_head', 'sgs_add_schema_markup', 4);
-
-// Improve image SEO
+/**
+ * Improve image SEO
+ */
 function sgs_add_image_alt_text($attr, $attachment)
 {
   if (empty($attr['alt'])) {
@@ -552,28 +874,23 @@ function sgs_add_image_alt_text($attr, $attachment)
 }
 add_filter('wp_get_attachment_image_attributes', 'sgs_add_image_alt_text', 10, 2);
 
-// Add canonical URL
-function sgs_add_canonical()
-{
-  if (is_singular()) {
-    echo '<link rel="canonical" href="' . esc_url(get_permalink()) . '">' . "\n";
-  } elseif (is_front_page()) {
-    echo '<link rel="canonical" href="' . esc_url(home_url('/')) . '">' . "\n";
-  }
-}
-add_action('wp_head', 'sgs_add_canonical', 5);
-
 /**
- * Performance Optimizations
+ * ============================================================================
+ * 11. PERFORMANCE OPTIMIZATIONS
+ * ============================================================================
  */
 
-// Remove unnecessary WordPress features
+/**
+ * Remove unnecessary WordPress features
+ */
 remove_action('wp_head', 'wp_generator');
 remove_action('wp_head', 'wlwmanifest_link');
 remove_action('wp_head', 'rsd_link');
 remove_action('wp_head', 'wp_shortlink_wp_head');
 
-// Disable emojis for better performance
+/**
+ * Disable emojis for better performance
+ */
 function sgs_disable_emojis()
 {
   remove_action('wp_head', 'print_emoji_detection_script', 7);
@@ -586,35 +903,11 @@ function sgs_disable_emojis()
 }
 add_action('init', 'sgs_disable_emojis');
 
-// Defer JavaScript loading
-function sgs_defer_scripts($tag, $handle, $src)
-{
-  // Skip if already has async or defer
-  if (strpos($tag, 'defer') !== false || strpos($tag, 'async') !== false) {
-    return $tag;
-  }
-
-  // Defer non-essential scripts
-  $defer_scripts = array('sgs-main', 'wp-embed');
-
-  if (in_array($handle, $defer_scripts)) {
-    return str_replace(' src', ' defer src', $tag);
-  }
-
-  return $tag;
-}
-add_filter('script_loader_tag', 'sgs_defer_scripts', 10, 3);
-
-// Remove query strings from static resources
-function sgs_remove_query_strings($src)
-{
-  if (strpos($src, '?ver=')) {
-    $src = remove_query_arg('ver', $src);
-  }
-  return $src;
-}
-add_filter('style_loader_src', 'sgs_remove_query_strings', 10, 1);
-add_filter('script_loader_src', 'sgs_remove_query_strings', 10, 1);
+/**
+ * ============================================================================
+ * 12. UTILITY FUNCTIONS
+ * ============================================================================
+ */
 
 /**
  * Breadcrumbs Function
@@ -714,59 +1007,13 @@ function sgs_breadcrumbs()
 }
 
 /**
- * Register News Custom Post Type
+ * ============================================================================
+ * 13. NEWS POST TYPE
+ * ============================================================================
  */
-function sgs_register_news_post_type()
-{
-  $labels = array(
-    'name'               => 'News',
-    'singular_name'      => 'News Article',
-    'menu_name'          => 'News',
-    'add_new'            => 'Add New',
-    'add_new_item'       => 'Add New Article',
-    'edit_item'          => 'Edit Article',
-    'new_item'           => 'New Article',
-    'view_item'          => 'View Article',
-    'search_items'       => 'Search News',
-    'not_found'          => 'No articles found',
-    'not_found_in_trash' => 'No articles found in trash',
-  );
-
-  $args = array(
-    'labels'              => $labels,
-    'public'              => true,
-    'has_archive'         => true,
-    'publicly_queryable'  => true,
-    'show_ui'             => true,
-    'show_in_menu'        => true,
-    'show_in_rest'        => true, // Enable Gutenberg editor
-    'menu_icon'           => 'dashicons-megaphone',
-    'menu_position'       => 5,
-    'supports'            => array('title', 'editor', 'excerpt', 'thumbnail', 'author', 'comments', 'revisions'),
-    'rewrite'             => array(
-      'slug'       => 'news',
-      'with_front' => false,
-    ),
-    'capability_type'     => 'post',
-    'taxonomies'          => array('category', 'post_tag'),
-  );
-
-  register_post_type('news', $args);
-}
-add_action('init', 'sgs_register_news_post_type');
 
 /**
- * Flush rewrite rules on theme activation
- */
-function sgs_flush_rewrites()
-{
-  sgs_register_news_post_type();
-  flush_rewrite_rules();
-}
-add_action('after_switch_theme', 'sgs_flush_rewrites');
-
-/**
- * Add SEO Meta Box for News
+ * Add News Meta Boxes
  */
 function sgs_add_news_meta_boxes()
 {
@@ -790,7 +1037,7 @@ function sgs_news_seo_callback($post)
 
   $meta_description = get_post_meta($post->ID, '_sgs_meta_description', true);
   $focus_keyword = get_post_meta($post->ID, '_sgs_focus_keyword', true);
-  ?>
+?>
   <div style="margin-bottom: 15px;">
     <label for="sgs_meta_description" style="display: block; margin-bottom: 5px; font-weight: bold;">Meta Description</label>
     <textarea id="sgs_meta_description" name="sgs_meta_description" rows="3" style="width: 100%;" maxlength="160"><?php echo esc_textarea($meta_description); ?></textarea>
@@ -823,7 +1070,7 @@ function sgs_news_seo_callback($post)
       updateCount();
     });
   </script>
-<?php
+  <?php
 }
 
 /**
@@ -952,150 +1199,6 @@ function sgs_add_news_schema()
   }
 }
 add_action('wp_head', 'sgs_add_news_schema', 10);
-
-/**
- * Register Reviews Custom Post Type
- */
-function sgs_register_reviews_post_type()
-{
-  $labels = array(
-    'name'               => 'Reviews',
-    'singular_name'      => 'Review',
-    'menu_name'          => 'Reviews',
-    'add_new'            => 'Add New',
-    'add_new_item'       => 'Add New Review',
-    'edit_item'          => 'Edit Review',
-    'new_item'           => 'New Review',
-    'view_item'          => 'View Review',
-    'search_items'       => 'Search Reviews',
-    'not_found'          => 'No reviews found',
-    'not_found_in_trash' => 'No reviews found in trash'
-  );
-
-  $args = array(
-    'labels'              => $labels,
-    'public'              => true,
-    'has_archive'         => false,
-    'publicly_queryable'  => false,
-    'show_ui'             => true,
-    'show_in_menu'        => true,
-    'menu_icon'           => 'dashicons-star-filled',
-    'supports'            => array('title', 'editor'),
-    'capability_type'     => 'post',
-    'rewrite'             => false,
-  );
-
-  register_post_type('review', $args);
-}
-add_action('init', 'sgs_register_reviews_post_type');
-
-/**
- * Add Review Meta Boxes
- */
-function sgs_add_review_meta_boxes()
-{
-  add_meta_box(
-    'review_details',
-    'Review Details',
-    'sgs_review_meta_box_callback',
-    'review',
-    'normal',
-    'high'
-  );
-}
-add_action('add_meta_boxes', 'sgs_add_review_meta_boxes');
-
-/**
- * Review Meta Box Callback
- */
-function sgs_review_meta_box_callback($post)
-{
-  wp_nonce_field('sgs_save_review_meta', 'sgs_review_meta_nonce');
-
-  $rating = get_post_meta($post->ID, '_review_rating', true);
-  $reviewer_name = get_post_meta($post->ID, '_reviewer_name', true);
-  $reviewer_location = get_post_meta($post->ID, '_reviewer_location', true);
-?>
-  <div style="margin: 15px 0;">
-    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Reviewer Name:</label>
-    <input type="text" name="reviewer_name" value="<?php echo esc_attr($reviewer_name); ?>" style="width: 100%; padding: 8px;" placeholder="John Smith">
-  </div>
-
-  <div style="margin: 15px 0;">
-    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Location:</label>
-    <input type="text" name="reviewer_location" value="<?php echo esc_attr($reviewer_location); ?>" style="width: 100%; padding: 8px;" placeholder="Salisbury, Wiltshire">
-  </div>
-
-  <div style="margin: 15px 0;">
-    <label style="display: block; margin-bottom: 5px; font-weight: 600;">Rating (1-5 stars):</label>
-    <select name="review_rating" style="width: 100%; padding: 8px;">
-      <option value="">Select Rating</option>
-      <?php for ($i = 1; $i <= 5; $i++) : ?>
-        <option value="<?php echo $i; ?>" <?php selected($rating, $i); ?>>
-          <?php echo $i; ?> Star<?php echo $i > 1 ? 's' : ''; ?>
-        </option>
-      <?php endfor; ?>
-    </select>
-  </div>
-  <?php
-}
-
-/**
- * Save Review Meta Data
- */
-function sgs_save_review_meta($post_id)
-{
-  if (!isset($_POST['sgs_review_meta_nonce']) || !wp_verify_nonce($_POST['sgs_review_meta_nonce'], 'sgs_save_review_meta')) {
-    return;
-  }
-
-  if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
-    return;
-  }
-
-  if (!current_user_can('edit_post', $post_id)) {
-    return;
-  }
-
-  if (isset($_POST['review_rating'])) {
-    update_post_meta($post_id, '_review_rating', sanitize_text_field($_POST['review_rating']));
-  }
-
-  if (isset($_POST['reviewer_name'])) {
-    update_post_meta($post_id, '_reviewer_name', sanitize_text_field($_POST['reviewer_name']));
-  }
-
-  if (isset($_POST['reviewer_location'])) {
-    update_post_meta($post_id, '_reviewer_location', sanitize_text_field($_POST['reviewer_location']));
-  }
-}
-add_action('save_post_review', 'sgs_save_review_meta');
-
-/**
- * Display Star Rating
- */
-function sgs_display_stars($rating, $size = 'default')
-{
-  $size_class = $size === 'large' ? 'w-6 h-6' : 'w-5 h-5';
-  $output = '<div class="flex gap-1">';
-
-  for ($i = 1; $i <= 5; $i++) {
-    if ($i <= $rating) {
-      // Full star
-      $output .= '<svg class="' . $size_class . ' text-secondary-400" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-            </svg>';
-    } else {
-      // Empty star
-      $output .= '<svg class="' . $size_class . ' text-neutral-300" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-            </svg>';
-    }
-  }
-
-  $output .= '</div>';
-  return $output;
-}
 
 /**
  * Handle Custom Contact Form Submission
@@ -1231,6 +1334,12 @@ function sgs_footer_social_icons()
 }
 
 /**
+ * ============================================================================
+ * 16. VERSION CONTROL
+ * ============================================================================
+ */
+
+/**
  * Get theme version from VERSION file
  * Returns the current version number for display in footer
  */
@@ -1245,3 +1354,167 @@ function sgs_get_theme_version()
 
   return '1.0.0'; // Fallback version
 }
+
+/**
+ * ============================================================================
+ * 11. PERFORMANCE OPTIMIZATIONS (CONTINUED)
+ * ============================================================================
+ */
+
+// Remove unnecessary WordPress features for better performance
+remove_action('wp_head', 'print_emoji_detection_script', 7);
+remove_action('wp_print_styles', 'print_emoji_styles');
+remove_action('admin_print_scripts', 'print_emoji_detection_script');
+remove_action('admin_print_styles', 'print_emoji_styles');
+
+// Disable embeds for better performance
+function sgs_disable_embeds()
+{
+  remove_action('wp_head', 'wp_oembed_add_discovery_links');
+  remove_action('wp_head', 'wp_oembed_add_host_js');
+}
+add_action('init', 'sgs_disable_embeds');
+
+// Remove query strings from static resources for better caching
+function sgs_remove_query_strings($src)
+{
+  if (strpos($src, '?ver=')) {
+    $src = remove_query_arg('ver', $src);
+  }
+  return $src;
+}
+add_filter('style_loader_src', 'sgs_remove_query_strings', 10, 2);
+add_filter('script_loader_src', 'sgs_remove_query_strings', 10, 2);
+
+// Add async/defer to scripts
+function sgs_add_async_defer_attribute($tag, $handle)
+{
+  // Scripts to defer
+  $defer_scripts = array('sgs-mobile-menu', 'sgs-scroll-animations');
+
+  if (in_array($handle, $defer_scripts)) {
+    return str_replace(' src', ' defer src', $tag);
+  }
+
+  return $tag;
+}
+add_filter('script_loader_tag', 'sgs_add_async_defer_attribute', 10, 2);
+
+// Enable lazy loading for images
+function sgs_add_lazy_loading($content)
+{
+  if (is_admin()) {
+    return $content;
+  }
+
+  $content = preg_replace('/<img(.*?)src=/i', '<img$1loading="lazy" src=', $content);
+  return $content;
+}
+add_filter('the_content', 'sgs_add_lazy_loading');
+
+// DNS Prefetch for external resources
+function sgs_dns_prefetch()
+{
+  echo '<link rel="dns-prefetch" href="//fonts.googleapis.com">';
+  echo '<link rel="dns-prefetch" href="//fonts.gstatic.com">';
+}
+add_action('wp_head', 'sgs_dns_prefetch', 1);
+
+/**
+ * ============================================================================
+ * 12. SEO ENHANCEMENTS
+ * ============================================================================
+ */
+
+// Add Open Graph meta tags
+function sgs_add_open_graph_tags()
+{
+  if (is_singular()) {
+    global $post;
+
+    $title = get_the_title();
+    $description = get_the_excerpt() ? get_the_excerpt() : wp_trim_words(strip_tags($post->post_content), 30);
+    $image = has_post_thumbnail() ? get_the_post_thumbnail_url(null, 'large') : get_template_directory_uri() . '/assets/img/social.png';
+    $url = get_permalink();
+
+    echo '<meta property="og:title" content="' . esc_attr($title) . '">' . "\n";
+    echo '<meta property="og:description" content="' . esc_attr($description) . '">' . "\n";
+    echo '<meta property="og:image" content="' . esc_url($image) . '">' . "\n";
+    echo '<meta property="og:url" content="' . esc_url($url) . '">' . "\n";
+    echo '<meta property="og:type" content="article">' . "\n";
+    echo '<meta property="og:site_name" content="' . esc_attr(get_bloginfo('name')) . '">' . "\n";
+
+    // Twitter Card
+    echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+    echo '<meta name="twitter:title" content="' . esc_attr($title) . '">' . "\n";
+    echo '<meta name="twitter:description" content="' . esc_attr($description) . '">' . "\n";
+    echo '<meta name="twitter:image" content="' . esc_url($image) . '">' . "\n";
+  } else {
+    // Homepage or archive
+    $title = get_bloginfo('name');
+    $description = get_bloginfo('description');
+    $image = get_template_directory_uri() . '/assets/img/social.png';
+    $url = home_url('/');
+
+    echo '<meta property="og:title" content="' . esc_attr($title) . '">' . "\n";
+    echo '<meta property="og:description" content="' . esc_attr($description) . '">' . "\n";
+    echo '<meta property="og:image" content="' . esc_url($image) . '">' . "\n";
+    echo '<meta property="og:url" content="' . esc_url($url) . '">' . "\n";
+    echo '<meta property="og:type" content="website">' . "\n";
+
+    echo '<meta name="twitter:card" content="summary_large_image">' . "\n";
+    echo '<meta name="twitter:title" content="' . esc_attr($title) . '">' . "\n";
+    echo '<meta name="twitter:description" content="' . esc_attr($description) . '">' . "\n";
+    echo '<meta name="twitter:image" content="' . esc_url($image) . '">' . "\n";
+  }
+}
+add_action('wp_head', 'sgs_add_open_graph_tags', 5);
+
+// Add canonical URL
+function sgs_add_canonical()
+{
+  if (is_singular()) {
+    echo '<link rel="canonical" href="' . esc_url(get_permalink()) . '">' . "\n";
+  } else if (is_home() || is_front_page()) {
+    echo '<link rel="canonical" href="' . esc_url(home_url('/')) . '">' . "\n";
+  }
+}
+add_action('wp_head', 'sgs_add_canonical', 5);
+
+// Improve excerpt length for SEO
+function sgs_custom_excerpt_length($length)
+{
+  return 30; // ~155 characters for meta descriptions
+}
+add_filter('excerpt_length', 'sgs_custom_excerpt_length');
+
+// Add schema.org structured data for local business
+function sgs_add_schema_markup()
+{
+  if (is_front_page()) {
+    $schema = array(
+      '@context' => 'https://schema.org',
+      '@type' => 'LocalBusiness',
+      'name' => 'Super Guttering Services',
+      'description' => 'Professional guttering maintenance and repair services in Salisbury and surrounding areas',
+      'url' => home_url('/'),
+      'telephone' => '07936764009',
+      'email' => 'info@superguttering.co.uk',
+      'address' => array(
+        '@type' => 'PostalAddress',
+        'addressLocality' => 'Salisbury',
+        'addressRegion' => 'Wiltshire',
+        'addressCountry' => 'GB'
+      ),
+      'areaServed' => array(
+        '@type' => 'City',
+        'name' => 'Salisbury'
+      ),
+      'priceRange' => '££',
+      'image' => get_template_directory_uri() . '/assets/img/social.png'
+    );
+
+    echo '<script type="application/ld+json">' . json_encode($schema, JSON_UNESCAPED_SLASHES) . '</script>' . "\n";
+  }
+}
+add_action('wp_head', 'sgs_add_schema_markup', 10);
