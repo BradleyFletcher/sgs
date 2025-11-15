@@ -228,7 +228,7 @@ function sgs_widgets_init()
     'description'   => __('Add widgets here to appear in your sidebar.', 'sgs'),
     'before_widget' => '<section id="%1$s" class="widget mb-8 %2$s">',
     'after_widget'  => '</section>',
-    'before_title'  => '<h3 class="widget-title text-xl font-bold mb-4">',
+    'before_title'  => '<h3 class="mb-4 text-xl font-bold widget-title">',
     'after_title'   => '</h3>',
   ));
 
@@ -238,7 +238,7 @@ function sgs_widgets_init()
     'description'   => __('Add widgets here to appear in your footer.', 'sgs'),
     'before_widget' => '<div id="%1$s" class="widget %2$s">',
     'after_widget'  => '</div>',
-    'before_title'  => '<h4 class="text-lg font-bold mb-4">',
+    'before_title'  => '<h4 class="mb-4 text-lg font-bold">',
     'after_title'   => '</h4>',
   ));
 
@@ -248,7 +248,7 @@ function sgs_widgets_init()
     'description'   => __('Add widgets here to appear in your footer.', 'sgs'),
     'before_widget' => '<div id="%1$s" class="widget %2$s">',
     'after_widget'  => '</div>',
-    'before_title'  => '<h4 class="text-lg font-bold mb-4">',
+    'before_title'  => '<h4 class="mb-4 text-lg font-bold">',
     'after_title'   => '</h4>',
   ));
 
@@ -258,7 +258,7 @@ function sgs_widgets_init()
     'description'   => __('Add widgets here to appear in your footer.', 'sgs'),
     'before_widget' => '<div id="%1$s" class="widget %2$s">',
     'after_widget'  => '</div>',
-    'before_title'  => '<h4 class="text-lg font-bold mb-4">',
+    'before_title'  => '<h4 class="mb-4 text-lg font-bold">',
     'after_title'   => '</h4>',
   ));
 }
@@ -371,10 +371,10 @@ function sgs_social_icons($classes = '')
     return;
   }
 
-  echo '<div class="flex space-x-3 ' . esc_attr($classes) . '">';
+  echo '<div class="flex space-x-3' . esc_attr($classes) . '">';
 
   if ($facebook) : ?>
-    <a href="<?php echo esc_url($facebook); ?>" target="_blank" rel="noopener noreferrer" class="text-primary-900 hover:text-primary-700 transition-colors hover:scale-110 transform" aria-label="Facebook">
+    <a href="<?php echo esc_url($facebook); ?>" target="_blank" rel="noopener noreferrer" class="transition-colors transform text-primary-900 hover:text-primary-700 hover:scale-110" aria-label="Facebook">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
       </svg>
@@ -382,7 +382,7 @@ function sgs_social_icons($classes = '')
   <?php endif;
 
   if ($twitter) : ?>
-    <a href="<?php echo esc_url($twitter); ?>" target="_blank" rel="noopener noreferrer" class="text-primary-900 hover:text-primary-700 transition-colors hover:scale-110 transform" aria-label="Twitter">
+    <a href="<?php echo esc_url($twitter); ?>" target="_blank" rel="noopener noreferrer" class="transition-colors transform text-primary-900 hover:text-primary-700 hover:scale-110" aria-label="Twitter">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
         <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
       </svg>
@@ -390,7 +390,7 @@ function sgs_social_icons($classes = '')
   <?php endif;
 
   if ($instagram) : ?>
-    <a href="<?php echo esc_url($instagram); ?>" target="_blank" rel="noopener noreferrer" class="text-primary-900 hover:text-primary-700 transition-colors hover:scale-110 transform" aria-label="Instagram">
+    <a href="<?php echo esc_url($instagram); ?>" target="_blank" rel="noopener noreferrer" class="transition-colors transform text-primary-900 hover:text-primary-700 hover:scale-110" aria-label="Instagram">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
       </svg>
@@ -398,7 +398,7 @@ function sgs_social_icons($classes = '')
   <?php endif;
 
   if ($tiktok) : ?>
-    <a href="<?php echo esc_url($tiktok); ?>" target="_blank" rel="noopener noreferrer" class="text-primary-900 hover:text-primary-700 transition-colors hover:scale-110 transform" aria-label="TikTok">
+    <a href="<?php echo esc_url($tiktok); ?>" target="_blank" rel="noopener noreferrer" class="transition-colors transform text-primary-900 hover:text-primary-700 hover:scale-110" aria-label="TikTok">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
         <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
       </svg>
@@ -406,7 +406,7 @@ function sgs_social_icons($classes = '')
   <?php endif;
 
   if ($whatsapp) : ?>
-    <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>" target="_blank" rel="noopener noreferrer" class="text-primary-900 hover:text-primary-700 transition-colors hover:scale-110 transform" aria-label="WhatsApp">
+    <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>" target="_blank" rel="noopener noreferrer" class="transition-colors transform text-primary-900 hover:text-primary-700 hover:scale-110" aria-label="WhatsApp">
       <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
       </svg>
@@ -622,7 +622,7 @@ add_filter('script_loader_src', 'sgs_remove_query_strings', 10, 1);
 function sgs_breadcrumbs()
 {
   // Settings
-  $separator = '<svg class="w-4 h-4 mx-2 text-neutral-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>';
+  $separator = '<svg class="mx-2 w-4 h-4 text-neutral-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg>';
   $home_title = 'Home';
 
   // Don't show on homepage
@@ -636,11 +636,11 @@ function sgs_breadcrumbs()
   // Build the breadcrumbs
   echo '<nav class="py-4" style="background-color: #0a0f1a;" aria-label="Breadcrumb">';
   echo '<div class="container-custom">';
-  echo '<ol class="flex items-center flex-wrap text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">';
+  echo '<ol class="flex flex-wrap items-center text-sm" itemscope itemtype="https://schema.org/BreadcrumbList">';
 
   // Home page
   echo '<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">';
-  echo '<a href="' . home_url('/') . '" itemprop="item" class="text-white hover:text-secondary-400 transition-colors font-medium">';
+  echo '<a href="' . home_url('/') . '" itemprop="item" class="font-medium text-white transition-colors hover:text-secondary-400">';
   echo '<span itemprop="name">' . $home_title . '</span></a>';
   echo '<meta itemprop="position" content="1" />';
   echo '</li>';
@@ -662,7 +662,7 @@ function sgs_breadcrumbs()
     if ($category) {
       echo $separator;
       echo '<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center">';
-      echo '<a href="' . get_category_link($category[0]->term_id) . '" itemprop="item" class="text-white hover:text-secondary-400 transition-colors">';
+      echo '<a href="' . get_category_link($category[0]->term_id) . '" itemprop="item" class="text-white transition-colors hover:text-secondary-400">';
       echo '<span itemprop="name">' . $category[0]->name . '</span></a>';
       echo '<meta itemprop="position" content="2" />';
       echo '</li>';
@@ -680,7 +680,7 @@ function sgs_breadcrumbs()
 
       while ($parent_id) {
         $page = get_page($parent_id);
-        $breadcrumbs[] = '<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center"><a href="' . get_permalink($page->ID) . '" itemprop="item" class="text-white hover:text-secondary-400 transition-colors"><span itemprop="name">' . get_the_title($page->ID) . '</span></a><meta itemprop="position" content="2" /></li>';
+        $breadcrumbs[] = '<li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem" class="flex items-center"><a href="' . get_permalink($page->ID) . '" itemprop="item" class="text-white transition-colors hover:text-secondary-400"><span itemprop="name">' . get_the_title($page->ID) . '</span></a><meta itemprop="position" content="2" /></li>';
         $parent_id = $page->post_parent;
       }
 
@@ -1188,7 +1188,7 @@ function sgs_footer_social_icons()
   echo '<div class="flex space-x-4">';
 
   if ($facebook) : ?>
-    <a href="<?php echo esc_url($facebook); ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-primary-800 hover:bg-secondary-400 rounded-full flex items-center justify-center transition-colors group" aria-label="Facebook">
+    <a href="<?php echo esc_url($facebook); ?>" target="_blank" rel="noopener noreferrer" class="flex justify-center items-center w-10 h-10 rounded-full transition-colors bg-primary-800 hover:bg-secondary-400 group" aria-label="Facebook">
       <svg class="w-5 h-5 text-white group-hover:text-primary-900" fill="currentColor" viewBox="0 0 24 24">
         <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
       </svg>
@@ -1196,7 +1196,7 @@ function sgs_footer_social_icons()
   <?php endif;
 
   if ($twitter) : ?>
-    <a href="<?php echo esc_url($twitter); ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-primary-800 hover:bg-secondary-400 rounded-full flex items-center justify-center transition-colors group" aria-label="Twitter">
+    <a href="<?php echo esc_url($twitter); ?>" target="_blank" rel="noopener noreferrer" class="flex justify-center items-center w-10 h-10 rounded-full transition-colors bg-primary-800 hover:bg-secondary-400 group" aria-label="Twitter">
       <svg class="w-5 h-5 text-white group-hover:text-primary-900" fill="currentColor" viewBox="0 0 24 24">
         <path d="M23.953 4.57a10 10 0 01-2.825.775 4.958 4.958 0 002.163-2.723c-.951.555-2.005.959-3.127 1.184a4.92 4.92 0 00-8.384 4.482C7.69 8.095 4.067 6.13 1.64 3.162a4.822 4.822 0 00-.666 2.475c0 1.71.87 3.213 2.188 4.096a4.904 4.904 0 01-2.228-.616v.06a4.923 4.923 0 003.946 4.827 4.996 4.996 0 01-2.212.085 4.936 4.936 0 004.604 3.417 9.867 9.867 0 01-6.102 2.105c-.39 0-.779-.023-1.17-.067a13.995 13.995 0 007.557 2.209c9.053 0 13.998-7.496 13.998-13.985 0-.21 0-.42-.015-.63A9.935 9.935 0 0024 4.59z" />
       </svg>
@@ -1204,7 +1204,7 @@ function sgs_footer_social_icons()
   <?php endif;
 
   if ($instagram) : ?>
-    <a href="<?php echo esc_url($instagram); ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-primary-800 hover:bg-secondary-400 rounded-full flex items-center justify-center transition-colors group" aria-label="Instagram">
+    <a href="<?php echo esc_url($instagram); ?>" target="_blank" rel="noopener noreferrer" class="flex justify-center items-center w-10 h-10 rounded-full transition-colors bg-primary-800 hover:bg-secondary-400 group" aria-label="Instagram">
       <svg class="w-5 h-5 text-white group-hover:text-primary-900" fill="currentColor" viewBox="0 0 24 24">
         <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
       </svg>
@@ -1212,7 +1212,7 @@ function sgs_footer_social_icons()
   <?php endif;
 
   if ($tiktok) : ?>
-    <a href="<?php echo esc_url($tiktok); ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-primary-800 hover:bg-secondary-400 rounded-full flex items-center justify-center transition-colors group" aria-label="TikTok">
+    <a href="<?php echo esc_url($tiktok); ?>" target="_blank" rel="noopener noreferrer" class="flex justify-center items-center w-10 h-10 rounded-full transition-colors bg-primary-800 hover:bg-secondary-400 group" aria-label="TikTok">
       <svg class="w-5 h-5 text-white group-hover:text-primary-900" fill="currentColor" viewBox="0 0 24 24">
         <path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-5.2 1.74 2.89 2.89 0 012.31-4.64 2.93 2.93 0 01.88.13V9.4a6.84 6.84 0 00-1-.05A6.33 6.33 0 005 20.1a6.34 6.34 0 0010.86-4.43v-7a8.16 8.16 0 004.77 1.52v-3.4a4.85 4.85 0 01-1-.1z" />
       </svg>
@@ -1220,7 +1220,7 @@ function sgs_footer_social_icons()
   <?php endif;
 
   if ($whatsapp) : ?>
-    <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>" target="_blank" rel="noopener noreferrer" class="w-10 h-10 bg-green-500 hover:bg-green-600 rounded-full flex items-center justify-center transition-colors group" aria-label="WhatsApp">
+    <a href="https://wa.me/<?php echo esc_attr($whatsapp); ?>" target="_blank" rel="noopener noreferrer" class="flex justify-center items-center w-10 h-10 bg-green-500 rounded-full transition-colors hover:bg-green-600 group" aria-label="WhatsApp">
       <svg class="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24">
         <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z" />
       </svg>
@@ -1236,7 +1236,7 @@ function sgs_footer_social_icons()
  */
 function sgs_get_theme_version()
 {
-  $version_file = get_template_directory() . '/../../../VERSION';
+  $version_file = get_template_directory() . '/VERSION';
 
   if (file_exists($version_file)) {
     $version = file_get_contents($version_file);
