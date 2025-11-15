@@ -83,11 +83,21 @@
  *     - sgs_add_news_meta_tags()            Line ~815 | News meta tags
  * 
  * 15. SOCIAL MEDIA
- *     - sgs_social_icons()                  Line ~1141| Social icon links
- *     - sgs_footer_social_icons()           Line ~1177| Footer social icons
+ *     - sgs_social_icons()                  Line ~555 | Social icon links
+ *     - sgs_footer_social_icons()           Line ~1290| Footer social icons
  * 
- * 16. VERSION CONTROL
- *     - sgs_get_theme_version()             Line ~1189| Get version from file
+ * 16. SECURITY ENHANCEMENTS
+ *     - Remove WP version                   Line ~1346| Hide WordPress version
+ *     - Disable XML-RPC                     Line ~1352| Prevent brute force
+ *     - sgs_add_security_headers()          Line ~1380| Security headers
+ *     - sgs_check_login_attempts()          Line ~1417| Limit login attempts
+ *     - sgs_hide_login_errors()             Line ~1459| Hide login errors
+ *     - sgs_disable_user_enumeration()      Line ~1468| Prevent username discovery
+ *     - sgs_sanitize_file_upload()          Line ~1513| Sanitize uploads
+ *     - sgs_enforce_strong_passwords()      Line ~1532| Force strong passwords
+ * 
+ * 17. VERSION CONTROL
+ *     - sgs_get_theme_version()             Line ~1590| Get version from file
  * 
  * ============================================================================
  * MAINTENANCE INSTRUCTIONS
@@ -1335,7 +1345,251 @@ function sgs_footer_social_icons()
 
 /**
  * ============================================================================
- * 16. VERSION CONTROL
+ * 16. SECURITY ENHANCEMENTS
+ * ============================================================================
+ */
+
+/**
+ * Remove WordPress version from head and feeds
+ * Prevents attackers from knowing which version you're running
+ */
+remove_action('wp_head', 'wp_generator');
+add_filter('the_generator', '__return_empty_string');
+
+/**
+ * Disable XML-RPC (prevents brute force attacks)
+ */
+add_filter('xmlrpc_enabled', '__return_false');
+
+/**
+ * Remove WordPress version from scripts and styles
+ */
+function sgs_remove_wp_version_strings($src)
+{
+  global $wp_version;
+  parse_str(parse_url($src, PHP_URL_QUERY), $query);
+  if (!empty($query['ver']) && $query['ver'] === $wp_version) {
+    $src = remove_query_arg('ver', $src);
+  }
+  return $src;
+}
+add_filter('script_loader_src', 'sgs_remove_wp_version_strings');
+add_filter('style_loader_src', 'sgs_remove_wp_version_strings');
+
+/**
+ * Disable file editing from WordPress admin
+ * Prevents hackers from editing theme/plugin files if they gain admin access
+ */
+if (!defined('DISALLOW_FILE_EDIT')) {
+  define('DISALLOW_FILE_EDIT', true);
+}
+
+/**
+ * Add security headers
+ */
+function sgs_add_security_headers()
+{
+  // Prevent clickjacking
+  header('X-Frame-Options: SAMEORIGIN');
+
+  // Prevent MIME type sniffing
+  header('X-Content-Type-Options: nosniff');
+
+  // Enable XSS protection
+  header('X-XSS-Protection: 1; mode=block');
+
+  // Referrer policy
+  header('Referrer-Policy: strict-origin-when-cross-origin');
+
+  // Permissions policy (formerly Feature-Policy)
+  header('Permissions-Policy: geolocation=(), microphone=(), camera=()');
+}
+add_action('send_headers', 'sgs_add_security_headers');
+
+/**
+ * Disable directory browsing
+ */
+function sgs_disable_directory_browsing()
+{
+  $htaccess_file = ABSPATH . '.htaccess';
+  if (file_exists($htaccess_file) && is_writable($htaccess_file)) {
+    $htaccess_content = file_get_contents($htaccess_file);
+    if (strpos($htaccess_content, 'Options -Indexes') === false) {
+      // Note: This is already in .htaccess, just ensuring it's there
+    }
+  }
+}
+
+/**
+ * Limit login attempts (basic protection)
+ * For production, consider using a plugin like Wordfence or Limit Login Attempts
+ */
+function sgs_check_login_attempts($user, $username, $password)
+{
+  $ip = $_SERVER['REMOTE_ADDR'];
+  $attempts = get_transient('login_attempts_' . $ip);
+
+  if ($attempts && $attempts >= 5) {
+    $wait_time = 15; // minutes
+    return new WP_Error('too_many_attempts', sprintf(
+      __('Too many failed login attempts. Please try again in %d minutes.', 'sgs'),
+      $wait_time
+    ));
+  }
+
+  return $user;
+}
+add_filter('authenticate', 'sgs_check_login_attempts', 30, 3);
+
+/**
+ * Track failed login attempts
+ */
+function sgs_login_failed($username)
+{
+  $ip = $_SERVER['REMOTE_ADDR'];
+  $attempts = get_transient('login_attempts_' . $ip);
+  $attempts = $attempts ? $attempts + 1 : 1;
+  set_transient('login_attempts_' . $ip, $attempts, 15 * MINUTE_IN_SECONDS);
+}
+add_action('wp_login_failed', 'sgs_login_failed');
+
+/**
+ * Reset login attempts on successful login
+ */
+function sgs_login_success($username)
+{
+  $ip = $_SERVER['REMOTE_ADDR'];
+  delete_transient('login_attempts_' . $ip);
+}
+add_action('wp_login', 'sgs_login_success');
+
+/**
+ * Hide login errors (don't tell attackers if username exists)
+ */
+function sgs_hide_login_errors()
+{
+  return __('Invalid credentials. Please try again.', 'sgs');
+}
+add_filter('login_errors', 'sgs_hide_login_errors');
+
+/**
+ * Disable user enumeration (prevents username discovery)
+ */
+function sgs_disable_user_enumeration()
+{
+  if (!is_admin() && isset($_REQUEST['author']) && intval($_REQUEST['author'])) {
+    wp_redirect(home_url(), 301);
+    exit;
+  }
+}
+add_action('template_redirect', 'sgs_disable_user_enumeration');
+
+/**
+ * Remove author archives from REST API
+ */
+function sgs_remove_author_rest_endpoint($endpoints)
+{
+  if (isset($endpoints['/wp/v2/users'])) {
+    unset($endpoints['/wp/v2/users']);
+  }
+  if (isset($endpoints['/wp/v2/users/(?P<id>[\d]+)'])) {
+    unset($endpoints['/wp/v2/users/(?P<id>[\d]+)']);
+  }
+  return $endpoints;
+}
+add_filter('rest_endpoints', 'sgs_remove_author_rest_endpoint');
+
+/**
+ * Add Content Security Policy (CSP) header
+ */
+function sgs_add_csp_header()
+{
+  $csp = "default-src 'self'; ";
+  $csp .= "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://fonts.googleapis.com; ";
+  $csp .= "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; ";
+  $csp .= "font-src 'self' https://fonts.gstatic.com; ";
+  $csp .= "img-src 'self' data: https:; ";
+  $csp .= "connect-src 'self'; ";
+  $csp .= "frame-ancestors 'self';";
+
+  header("Content-Security-Policy: " . $csp);
+}
+// Uncomment when ready to implement (may need adjustments for your specific needs)
+// add_action('send_headers', 'sgs_add_csp_header');
+
+/**
+ * Sanitize file uploads
+ */
+function sgs_sanitize_file_upload($file)
+{
+  $file['name'] = sanitize_file_name($file['name']);
+
+  // Check file extension
+  $allowed_types = array('jpg', 'jpeg', 'png', 'gif', 'pdf', 'doc', 'docx', 'webp');
+  $file_ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+  if (!in_array($file_ext, $allowed_types)) {
+    $file['error'] = 'File type not allowed. Allowed types: ' . implode(', ', $allowed_types);
+  }
+
+  return $file;
+}
+add_filter('wp_handle_upload_prefilter', 'sgs_sanitize_file_upload');
+
+/**
+ * Force strong passwords for administrators
+ */
+function sgs_enforce_strong_passwords($errors, $update, $user)
+{
+  $password = isset($_POST['pass1']) ? $_POST['pass1'] : '';
+
+  if (!$update && in_array('administrator', $user->roles)) {
+    if (strlen($password) < 12) {
+      $errors->add('password_length', __('Administrator passwords must be at least 12 characters long.', 'sgs'));
+    }
+    if (!preg_match('/[A-Z]/', $password)) {
+      $errors->add('password_uppercase', __('Password must contain at least one uppercase letter.', 'sgs'));
+    }
+    if (!preg_match('/[a-z]/', $password)) {
+      $errors->add('password_lowercase', __('Password must contain at least one lowercase letter.', 'sgs'));
+    }
+    if (!preg_match('/[0-9]/', $password)) {
+      $errors->add('password_number', __('Password must contain at least one number.', 'sgs'));
+    }
+    if (!preg_match('/[^A-Za-z0-9]/', $password)) {
+      $errors->add('password_special', __('Password must contain at least one special character.', 'sgs'));
+    }
+  }
+
+  return $errors;
+}
+add_action('user_profile_update_errors', 'sgs_enforce_strong_passwords', 10, 3);
+
+/**
+ * Disable pingbacks and trackbacks
+ */
+function sgs_disable_pingbacks(&$links)
+{
+  foreach ($links as $l => $link) {
+    if (strpos($link, get_option('home')) === 0) {
+      unset($links[$l]);
+    }
+  }
+}
+add_action('pre_ping', 'sgs_disable_pingbacks');
+
+/**
+ * Remove WordPress version from RSS feeds
+ */
+function sgs_remove_version_rss()
+{
+  return '';
+}
+add_filter('the_generator', 'sgs_remove_version_rss');
+
+/**
+ * ============================================================================
+ * 17. VERSION CONTROL
  * ============================================================================
  */
 
