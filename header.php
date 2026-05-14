@@ -52,6 +52,16 @@
           <?php endif; ?>
         </div>
 
+        <style>
+          header nav ul.sub-menu {
+            display: none;
+          }
+
+          #mobile-menu[hidden] {
+            display: none !important;
+          }
+        </style>
+
         <!-- Desktop Navigation -->
         <nav class="hidden items-center space-x-1 lg:flex">
           <?php
@@ -215,6 +225,10 @@
             display: block;
           }
 
+          header nav>ul>li:hover>ul.sub-menu {
+            display: block;
+          }
+
           #mobile-menu nav ul.sub-menu li a {
             display: flex;
             align-items: center;
@@ -283,7 +297,7 @@
         </div>
 
         <!-- Modern Mobile Menu Button -->
-        <button id="mobile-menu-button" class="relative w-10 h-10 text-white rounded-lg transition-all lg:hidden hover:text-secondary-400 focus:outline-none focus:ring-2 focus:ring-secondary-400 hamburger">
+        <button id="mobile-menu-button" class="relative w-10 h-10 text-white rounded-lg transition-all lg:hidden hover:text-secondary-400 focus:outline-none focus:ring-2 focus:ring-secondary-400 hamburger" aria-expanded="false" aria-controls="mobile-menu">
           <span class="sr-only">Open menu</span>
           <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
             <span class="block w-6 h-0.5 bg-current transition-all duration-300 ease-in-out transform hamburger-line" style="transform: translateY(-6px);"></span>
@@ -296,7 +310,7 @@
   </header>
 
   <!-- Modern Mobile Menu Overlay -->
-  <div id="mobile-menu" class="fixed inset-0 z-[60] lg:hidden hidden">
+  <div id="mobile-menu" class="fixed inset-0 z-[60] lg:hidden hidden" hidden>
     <!-- Backdrop -->
     <div class="fixed inset-0 bg-opacity-95 backdrop-blur-sm transition-opacity bg-primary-900"></div>
 

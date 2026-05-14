@@ -16,8 +16,10 @@
 
   // Open mobile menu
   function openMobileMenu() {
+    mobileMenu.hidden = false;
     mobileMenu.classList.remove('hidden');
     mobileMenuButton.classList.add('active');
+    mobileMenuButton.setAttribute('aria-expanded', 'true');
     body.style.overflow = 'hidden';
     
     // Trigger animation after display
@@ -30,17 +32,19 @@
   function closeMobileMenu() {
     mobileMenu.classList.remove('show');
     mobileMenuButton.classList.remove('active');
+    mobileMenuButton.setAttribute('aria-expanded', 'false');
     body.style.overflow = '';
     
     // Wait for animation to complete before hiding
     setTimeout(() => {
       mobileMenu.classList.add('hidden');
+      mobileMenu.hidden = true;
     }, 300);
   }
 
   // Toggle mobile menu
   function toggleMobileMenu() {
-    if (mobileMenu.classList.contains('hidden')) {
+    if (mobileMenu.hidden || mobileMenu.classList.contains('hidden')) {
       openMobileMenu();
     } else {
       closeMobileMenu();
