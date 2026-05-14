@@ -65,7 +65,7 @@ get_header(); ?>
           <input type="hidden" name="action" value="sgs_contact_form">
           <?php wp_nonce_field('sgs_contact_form', 'contact_nonce'); ?>
           <input type="hidden" name="contact_started_at" value="<?php echo esc_attr(time()); ?>">
-          <div class="absolute left-[-9999px] top-auto w-px h-px overflow-hidden" aria-hidden="true">
+          <div style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;" aria-hidden="true">
             <label for="contact_website">Website</label>
             <input type="text" id="contact_website" name="contact_website" value="" tabindex="-1" autocomplete="off">
           </div>
