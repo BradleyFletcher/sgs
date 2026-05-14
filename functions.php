@@ -1253,6 +1253,71 @@ add_action('wp_head', 'sgs_add_news_schema', 10);
 /**
  * Handle Custom Contact Form Submission
  */
+function sgs_contact_redirect($status)
+{
+  $fallback = home_url('/contact-us/');
+  $referer = wp_get_referer();
+  $redirect_to = $referer ? $referer : $fallback;
+
+  wp_safe_redirect(add_query_arg('contact', $status, $redirect_to));
+  exit;
+}
+
+function sgs_get_contact_ip()
+{
+  if (!empty($_SERVER['HTTP_CF_CONNECTING_IP']) && filter_var($_SERVER['HTTP_CF_CONNECTING_IP'], FILTER_VALIDATE_IP)) {
+    return sanitize_text_field(wp_unslash($_SERVER['HTTP_CF_CONNECTING_IP']));
+  }
+
+  if (!empty($_SERVER['REMOTE_ADDR']) && filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)) {
+    return sanitize_text_field(wp_unslash($_SERVER['REMOTE_ADDR']));
+  }
+
+  return 'unknown';
+}
+
+function sgs_contact_rate_limited($key, $limit, $window)
+{
+  $transient_key = 'sgs_contact_rate_' . md5($key);
+  $count = (int) get_transient($transient_key);
+
+  if ($count >= $limit) {
+    return true;
+  }
+
+  set_transient($transient_key, $count + 1, $window);
+  return false;
+}
+
+function sgs_contact_has_spam_content($name, $email, $phone, $message)
+{
+  $content = strtolower($name . ' ' . $email . ' ' . $phone . ' ' . $message);
+
+  if (preg_match_all('/https?:\/\/|www\.|<a\s|<\/a>|url=|\[link/i', $content) > 1) {
+    return true;
+  }
+
+  $blocked_terms = array(
+    'casino',
+    'crypto',
+    'forex',
+    'loan',
+    'porn',
+    'seo services',
+    'viagra',
+    'web design services',
+    'whatsapp marketing'
+  );
+
+  foreach ($blocked_terms as $term) {
+    if (strpos($content, $term) !== false) {
+      return true;
+    }
+  }
+
+  return false;
+}
+
 function sgs_handle_contact_form()
 {
   // Verify nonce
@@ -1260,23 +1325,46 @@ function sgs_handle_contact_form()
     wp_die('Security check failed');
   }
 
+  if (!empty($_POST['contact_website'])) {
+    sgs_contact_redirect('success');
+  }
+
+  $started_at = isset($_POST['contact_started_at']) ? absint($_POST['contact_started_at']) : 0;
+  $form_age = $started_at ? time() - $started_at : 0;
+
+  if ($form_age < 3 || $form_age > DAY_IN_SECONDS) {
+    sgs_contact_redirect('spam');
+  }
+
   // Sanitize form data
-  $name = sanitize_text_field($_POST['contact_name']);
-  $email = sanitize_email($_POST['contact_email']);
-  $phone = sanitize_text_field($_POST['contact_phone']);
-  $service = sanitize_text_field($_POST['contact_service']);
-  $message = sanitize_textarea_field($_POST['contact_message']);
+  $name = isset($_POST['contact_name']) ? sanitize_text_field(wp_unslash($_POST['contact_name'])) : '';
+  $email = isset($_POST['contact_email']) ? sanitize_email(wp_unslash($_POST['contact_email'])) : '';
+  $phone = isset($_POST['contact_phone']) ? sanitize_text_field(wp_unslash($_POST['contact_phone'])) : '';
+  $service = isset($_POST['contact_service']) ? sanitize_text_field(wp_unslash($_POST['contact_service'])) : '';
+  $message = isset($_POST['contact_message']) ? sanitize_textarea_field(wp_unslash($_POST['contact_message'])) : '';
 
   // Validate required fields
   if (empty($name) || empty($email) || empty($phone)) {
-    wp_redirect(add_query_arg('contact', 'error', wp_get_referer()));
-    exit;
+    sgs_contact_redirect('error');
   }
 
   // Validate email
   if (!is_email($email)) {
-    wp_redirect(add_query_arg('contact', 'invalid_email', wp_get_referer()));
-    exit;
+    sgs_contact_redirect('invalid_email');
+  }
+
+  if (sgs_contact_has_spam_content($name, $email, $phone, $message)) {
+    sgs_contact_redirect('spam');
+  }
+
+  $ip = sgs_get_contact_ip();
+
+  if (
+    sgs_contact_rate_limited('ip:' . $ip, 3, HOUR_IN_SECONDS) ||
+    sgs_contact_rate_limited('email:' . strtolower($email), 2, HOUR_IN_SECONDS) ||
+    sgs_contact_rate_limited('phone:' . preg_replace('/\D+/', '', $phone), 2, HOUR_IN_SECONDS)
+  ) {
+    sgs_contact_redirect('spam');
   }
 
   // Prepare email
@@ -1314,11 +1402,10 @@ function sgs_handle_contact_form()
 
   // Redirect with success or error message
   if ($sent) {
-    wp_redirect(add_query_arg('contact', 'success', wp_get_referer()));
+    sgs_contact_redirect('success');
   } else {
-    wp_redirect(add_query_arg('contact', 'failed', wp_get_referer()));
+    sgs_contact_redirect('failed');
   }
-  exit;
 }
 add_action('admin_post_nopriv_sgs_contact_form', 'sgs_handle_contact_form');
 add_action('admin_post_sgs_contact_form', 'sgs_handle_contact_form');

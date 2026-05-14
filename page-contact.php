@@ -53,6 +53,10 @@ get_header(); ?>
             echo '<div class="mb-6 border-l-4 border-red-500 bg-red-50 text-red-800 px-6 py-4 rounded-lg shadow-md">
                                 <strong>✗ Error!</strong> Failed to send message. Please try again or contact us directly.
                               </div>';
+          } elseif ($status === 'spam') {
+            echo '<div class="mb-6 border-l-4 border-red-500 bg-red-50 text-red-800 px-6 py-4 rounded-lg shadow-md">
+                                <strong>⚠️ Error!</strong> Please wait a moment and try again, or contact us directly.
+                              </div>';
           }
         }
         ?>
@@ -60,6 +64,11 @@ get_header(); ?>
         <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" class="space-y-6">
           <input type="hidden" name="action" value="sgs_contact_form">
           <?php wp_nonce_field('sgs_contact_form', 'contact_nonce'); ?>
+          <input type="hidden" name="contact_started_at" value="<?php echo esc_attr(time()); ?>">
+          <div class="absolute left-[-9999px] top-auto w-px h-px overflow-hidden" aria-hidden="true">
+            <label for="contact_website">Website</label>
+            <input type="text" id="contact_website" name="contact_website" value="" tabindex="-1" autocomplete="off">
+          </div>
 
           <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
