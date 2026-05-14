@@ -4,6 +4,8 @@ module.exports = {
     './*.php',
     './template-parts/**/*.php',
     './inc/**/*.php',
+    './assets/js/**/*.js',
+    './src/**/*.{css,js}',
   ],
   theme: {
     extend: {

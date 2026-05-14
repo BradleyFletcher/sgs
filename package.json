@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "WordPress theme for Super Guttering Services",
   "scripts": {
-    "dev": "tailwindcss -i ./src/input.css -o ./assets/css/style.css --watch",
+    "dev": "tailwindcss -i ./src/input.css -o ./assets/css/style.css --watch=always",
     "build": "tailwindcss -i ./src/input.css -o ./assets/css/style.css --minify"
   },
   "keywords": ["wordpress", "theme", "tailwindcss"],

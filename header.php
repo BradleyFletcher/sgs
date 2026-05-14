@@ -126,13 +126,15 @@
             transform: translateY(-10px);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             z-index: 100;
-            margin-top: 0.5rem;
+            margin-top: 0;
             padding: 0.5rem;
             list-style: none;
             border: 1px solid rgba(251, 191, 36, 0.1);
           }
 
-          header nav>ul>li:hover>ul.sub-menu {
+          header nav>ul>li:hover>ul.sub-menu,
+          header nav>ul>li:focus-within>ul.sub-menu {
+            display: block;
             opacity: 1;
             visibility: visible;
             transform: translateY(0);
@@ -222,10 +224,6 @@
           }
 
           #mobile-menu nav ul.sub-menu.show {
-            display: block;
-          }
-
-          header nav>ul>li:hover>ul.sub-menu {
             display: block;
           }
 
